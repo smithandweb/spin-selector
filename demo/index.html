@@ -1,10 +1,19 @@
 <!doctype html>
 <html>
   <head>
-    
+    <link rel="stylesheet" type="text/css" href="../dist/spin-selector.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
   <body>
-    
-    <script type="text/javascript" src="lib/jquery.js"></script>
+  <h1>Spin Selector</h1>
+    <div class="spin-selector"></div>
+<script type="text/javascript" src="lib/jquery.js"></script>
+<script type="text/javascript" src="lib/touchswipe.js"></script>
+<script type="text/javascript" src="../dist/spin-selector.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.spin-selector').spinSelector();
+  });
+</script>
   </body>
 </html>
