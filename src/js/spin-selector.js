@@ -245,6 +245,7 @@
         threshold: 25,
         triggerOnTouchEnd: false,
         allowPageScroll: "none",
+        preventDefaultEvents: false
       });
     }
     return this;
