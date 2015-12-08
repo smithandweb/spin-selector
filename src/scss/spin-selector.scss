@@ -1,8 +1,9 @@
 .spin-selector-container {
   width: 280px;
-  height:160px;
+  height: 160px;
   background: #222;
   padding: 20px 20px 0 20px;
+  box-sizing: content-box;
 
   &::after {
     content: " ";
@@ -10,7 +11,7 @@
   }
 
   .selector {
-    width:80px;
+    width: 80px;
     margin-right: 20px;
     float: left;
 
@@ -69,7 +70,7 @@
     }
 
     &:last-child {
-      margin-right: 0px;
+      margin-right: 0;
     }
   }
 }
