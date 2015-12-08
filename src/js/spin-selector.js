@@ -243,7 +243,8 @@
           setActive($input, value);
         },
         threshold: 25,
-        triggerOnTouchEnd: false
+        triggerOnTouchEnd: false,
+        allowPageScroll: "none",
       });
     }
     return this;
