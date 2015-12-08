@@ -86,6 +86,7 @@
         $year.find('.value-scroller').append($yearToAdd);
       }
       // Add to template
+      $year.data('type', 'year');
       $containerTmpl.append($year);
       setActive($year, new Date().getFullYear());
 
@@ -96,6 +97,7 @@
         $month.find('.value-scroller').append($monthToAdd);
       }
       // Add to template
+      $month.data('type', 'month');
       $containerTmpl.append($month);
       setActive($month, new Date().getMonth() + 1);
 
@@ -109,15 +111,17 @@
         $day.find('.value-scroller').append($dayToAdd);
       }
       // Add to template
+      $day.data('type', 'day');
       $containerTmpl.append($day);
+      setActive($day, new Date().getDate());
+
+      // Add container data
       $containerTmpl.data({
         isDate: true,
         $year: $year,
         $month: $month,
         $day: $day
       });
-      setActive($day, new Date().getDate());
-
     }
 
     function getData() {
@@ -142,8 +146,7 @@
       var $dayToAdd, days, selectedDay, newActiveDay,
         data = getData(),
         properties = $containerTmpl.data();
-
-      if (properties.isDate) {
+      if (properties.isDate && $(this).data('type') !== 'day') {
         selectedDay = properties.$day.find('.spin-value.active').index();
         properties.$day.find('.value-scroller').empty();
         days = daysInMonth((properties.$month.find('.spin-value.active').attr('data-value')), properties.$year.find('.spin-value.active').attr('data-value'));
@@ -152,7 +155,7 @@
           $dayToAdd = $('<div class="spin-value">' + (i + 1) + '</div>').attr('data-value', i + 1);
           properties.$day.find('.value-scroller').append($dayToAdd);
         }
-        console.log('days activator', days, selectedDay);
+
         if (days <= selectedDay) {
           newActiveDay = days - 1;
         } else {
@@ -174,7 +177,7 @@
         inputs = $this.parent('.selector').find('.spin-value').length - 1;
 
       currentEq = $this.parent('.selector').find('.spin-value.active').index();
-      console.log('length of inputs', inputs, currentEq);
+
       if ($this.hasClass('spin-up')) {
         if (currentEq === inputs) {
           nextEq = 0;
@@ -201,27 +204,46 @@
       $this.find('.selector').swipe({
         swipe: function (e, dir, dis, dur) {
           var delta,
-            nextEq,
+            $index,
             $input,
+            inputs,
             value,
-            currentEq = $this.parent('.selector').find('.spin-value.active').index(),
+            currentEq,
+            nextEq,
             valueHeight = $this.find('.spin-value').height();
 
-          console.log(e, dir, dis, dur, valueHeight);
-          delta = Math.round(valueHeight / dis);
+          delta = Math.max(1, Math.round(dis / valueHeight));
+          console.log(e, dir, dis, dur, delta);
 
-          if (dir === 'up') {
-            nextEq = currentEq - delta;
-          } else if (dir === 'down') {
-            nextEq = currentEq + delta;
+          for (i = e.path.length - 1; i >= 0; i--) {
+            $index = $(e.path[i]);
+            if ($index.hasClass('selector')) {
+              $input = $index;
+            }
           }
 
-          $input = $this.parent('.selector');
-          value = $('.spin-value').eq(nextEq).attr('data-value');
-          console.log($input, value);
+          inputs = $input.find('.spin-value').length - 1;
+          currentEq = $input.find('.spin-value.active').index();
+
+          if (dir === 'up') {
+            if (currentEq === inputs) {
+              nextEq = 0;
+            } else {
+              nextEq = currentEq + 1;
+            }
+          } else if (dir === 'down') {
+            if (currentEq === 0) {
+              nextEq = inputs;
+            } else {
+              nextEq = currentEq - 1;
+            }
+          }
+
+          value = $input.find('.spin-value').eq(nextEq).attr('data-value');
           setActive($input, value);
         },
-        threshold: 25
+        threshold: 25,
+        triggerOnTouchEnd: false
       });
     }
     return this;
