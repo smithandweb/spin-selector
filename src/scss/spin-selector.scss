@@ -8,68 +8,68 @@
     content: " ";
     clear: both;
   }
-}
 
-.selector {
-  width:80px;
-  margin-right: 20px;
-  float: left;
+  .selector {
+    width:80px;
+    margin-right: 20px;
+    float: left;
 
-  color: #efefef;
-  text-align: center;
+    color: #efefef;
+    text-align: center;
 
-  .label {
-    text-transform: uppercase;
-    font-size: 12px;
-    margin-bottom: 5px;
-  }
+    .label {
+      text-transform: uppercase;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
 
-  .spin-up, .spin-down {
-    height: 30px;
-    line-height: 30px;
-    cursor: pointer;
+    .spin-up, .spin-down {
+      height: 30px;
+      line-height: 30px;
+      cursor: pointer;
 
-    &:hover {
+      &:hover {
+        background: #333;
+      }
+    }
+
+    .spin-up {
+      border-bottom: solid 1px #777;
+    }
+
+    .spin-down {
+      border-top: solid 1px #777;
+    }
+
+    .value-container {
+      position: relative;
+      min-height: 70px;
+      overflow: hidden;
+
+      .value-scroller {
+        position: absolute;
+        transition: top 0.3s ease-in-out;
+      }
+    }
+
+    .spin-value {
+      height: 60px;
+      width: 80px;
+      line-height: 60px;
+      font-size: 24px;
       background: #333;
+      margin: 5px 0;
+
+      &:focus {
+        outline: 0;
+        border: 0;
+        background: #efefef;
+        color: #333;
+      }
     }
-  }
 
-  .spin-up {
-    border-bottom: solid 1px #777;
-  }
-
-  .spin-down {
-    border-top: solid 1px #777;
-  }
-
-  .value-container {
-    position: relative;
-    min-height: 70px;
-    overflow: hidden;
-
-    .value-scroller {
-      position: absolute;
-      transition: top 0.3s ease-in-out;
+    &:last-child {
+      margin-right: 0px;
     }
-  }
-
-  .spin-value {
-    height: 60px;
-    width: 80px;
-    line-height: 60px;
-    font-size: 24px;
-    background: #333;
-    margin: 5px 0;
-
-    &:focus {
-      outline: 0;
-      border: 0;
-      background: #efefef;
-      color: #333;
-    }
-  }
-
-  &:last-child {
-    margin-right: 0px;
   }
 }
