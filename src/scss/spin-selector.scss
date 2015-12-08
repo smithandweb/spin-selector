@@ -1,78 +1,75 @@
-.spin-selector {
+.spin-selector-container {
+  width: 280px;
+  height:160px;
+  background: #222;
+  padding: 20px 20px 0 20px;
 
-  .spin-selector-container {
-    width: 280px;
-    height:160px;
-    background: #222;
-    padding: 20px 20px 0 20px;
+  &::after {
+    content: " ";
+    clear: both;
+  }
+}
 
-    &::after {
-      content: " ";
-      clear: both;
+.selector {
+  width:80px;
+  margin-right: 20px;
+  float: left;
+
+  color: #efefef;
+  text-align: center;
+
+  .label {
+    text-transform: uppercase;
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  .spin-up, .spin-down {
+    height: 30px;
+    line-height: 30px;
+    cursor: pointer;
+
+    &:hover {
+      background: #333;
     }
   }
 
-  .selector {
-    width:80px;
-    margin-right: 20px;
-    float: left;
+  .spin-up {
+    border-bottom: solid 1px #777;
+  }
 
-    color: #efefef;
-    text-align: center;
+  .spin-down {
+    border-top: solid 1px #777;
+  }
 
-    .label {
-      text-transform: uppercase;
-      font-size: 12px;
-      margin-bottom: 5px;
+  .value-container {
+    position: relative;
+    min-height: 70px;
+    overflow: hidden;
+
+    .value-scroller {
+      position: absolute;
+      transition: top 0.3s ease-in-out;
     }
+  }
 
-    .spin-up, .spin-down {
-      height: 30px;
-      line-height: 30px;
-      cursor: pointer;
+  .spin-value {
+    height: 60px;
+    width: 80px;
+    line-height: 60px;
+    font-size: 24px;
+    background: #333;
+    margin: 5px 0;
 
-      &:hover {
-        background: #333;
-      }
+    &:focus {
+      outline: 0;
+      border: 0;
+      background: #efefef;
+      color: #333;
     }
+  }
 
-    .spin-up {
-      border-bottom: solid 1px #777;
-    }
-
-    .spin-down {
-      border-top: solid 1px #777;
-    }
-
-    .value-container {
-      position: relative;
-      min-height: 70px;
-      overflow: hidden;
-
-      .value-scroller {
-        position: absolute;
-        transition: top 0.3s ease-in-out;
-      }
-    }
-
-    .spin-value {
-      height: 60px;
-      width: 80px;
-      line-height: 60px;
-      font-size: 24px;
-      background: #333;
-      margin: 5px 0;
-
-      &:focus {
-        outline: 0;
-        border: 0;
-        background: #efefef;
-        color: #333;
-      }
-    }
-
-    &:last-child {
-      margin-right: 0px;
-    }
+  &:last-child {
+    margin-right: 0px;
   }
 }
