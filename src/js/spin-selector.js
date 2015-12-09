@@ -234,10 +234,12 @@
     }
 
     function initHammer() {
-      var selectors = document.getElementsByClassName('selector');
+      var $selector,
+        hammeredSelector,
+        selectors = document.getElementsByClassName('selector');
       for (i = selectors.length - 1; i >= 0; i--) {
-        var $selector = $(selectors[i]),
-          hammeredSelector = new window.Hammer(selectors[i]);
+        $selector = $(selectors[i]);
+        hammeredSelector = new window.Hammer(selectors[i]);
 
         $selector.data('hammer', hammeredSelector);
 
