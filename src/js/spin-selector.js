@@ -49,7 +49,6 @@
     }
 
     function setActive($input, value) {
-      console.log('setActive', $input, value, $input.find('[data-value=' + value + ']'));
       if ($input.find('[data-value=' + value + ']').length <= 0) {
         return;
       }
@@ -201,7 +200,6 @@
 
     // Bind to swipe events if touchswipe is present
     function swipeHandler(e) {
-      console.log(e);
       var inputs,
         currentEq,
         nextEq,
