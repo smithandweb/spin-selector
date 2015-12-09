@@ -27,7 +27,7 @@ module.exports = function (grunt) {
         beautify: false,
         compress: true,
         mangle: true,
-        sourceMap: true,
+        sourceMap: false,
         preserveComments: false
       },
       my_target: {

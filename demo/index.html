@@ -12,10 +12,13 @@
 <script type="text/javascript" src="lib/hammer.js"></script>
 <script type="text/javascript" src="../dist/spin-selector.min.js"></script>
 <script type="text/javascript">
-  $(document).ready(function() {
-    $('.spin-selector').spinSelector(null, function (data) {
+  var opts = {
+    callback: function (data) {
       console.log(data);
-    });
+    }
+  }
+  $(document).ready(function() {
+    $('.spin-selector').spinSelector(opts);
   });
 </script>
   </body>
