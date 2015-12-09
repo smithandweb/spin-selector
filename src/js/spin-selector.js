@@ -200,54 +200,59 @@
     });
 
     // Bind to swipe events if touchswipe is present
-    if ($this.swipe) {
-      $this.find('.selector').swipe({
-        swipe: function (e, dir, dis, dur) {
-          var delta,
-            $index,
-            $input,
-            inputs,
-            value,
-            currentEq,
-            nextEq,
-            valueHeight = $this.find('.spin-value').height();
+    function swipeHandler(e) {
+      var inputs,
+        currentEq,
+        nextEq,
+        value,
+        dir = e.type,
+        $input = $(e.target);
 
-          delta = Math.max(1, Math.round(dis / valueHeight));
-          console.log(e, dir, dis, dur, delta);
+      if (!($input.hasClass('selector'))) {
+        $input = $input.closest('.selector');
+      }
 
-          for (i = e.path.length - 1; i >= 0; i--) {
-            $index = $(e.path[i]);
-            if ($index.hasClass('selector')) {
-              $input = $index;
-            }
-          }
+      inputs = $input.find('.spin-value').length - 1;
+      currentEq = $input.find('.spin-value.active').index();
 
-          inputs = $input.find('.spin-value').length - 1;
-          currentEq = $input.find('.spin-value.active').index();
+      if (dir === 'swipeup') {
+        if (currentEq === inputs) {
+          nextEq = 0;
+        } else {
+          nextEq = currentEq + 1;
+        }
+      } else if (dir === 'swipedown') {
+        if (currentEq === 0) {
+          nextEq = inputs;
+        } else {
+          nextEq = currentEq - 1;
+        }
+      }
 
-          if (dir === 'up') {
-            if (currentEq === inputs) {
-              nextEq = 0;
-            } else {
-              nextEq = currentEq + 1;
-            }
-          } else if (dir === 'down') {
-            if (currentEq === 0) {
-              nextEq = inputs;
-            } else {
-              nextEq = currentEq - 1;
-            }
-          }
-
-          value = $input.find('.spin-value').eq(nextEq).attr('data-value');
-          setActive($input, value);
-        },
-        threshold: 25,
-        triggerOnTouchEnd: false,
-        allowPageScroll: "none",
-        preventDefaultEvents: false
-      });
+      value = $input.find('.spin-value').eq(nextEq).attr('data-value');
+      setActive($input, value);
     }
+
+    function initHammer() {
+      var selectors = document.getElementsByClassName('selector');
+      for (i = selectors.length - 1; i >= 0; i--) {
+        var $selector = $(selectors[i]),
+          hammeredSelector = new window.Hammer(selectors[i]);
+
+        $selector.data('hammer', hammeredSelector);
+
+        hammeredSelector.get('swipe').set({direction: window.Hammer.DIRECTION_ALL, threshold: 0, velocity: 0.1});
+
+        hammeredSelector.on('swipeup swipedown', function (e) {
+          swipeHandler(e);
+        });
+      }
+    }
+
+    if (window.Hammer) {
+      initHammer();
+    }
+
     return this;
   };
 
