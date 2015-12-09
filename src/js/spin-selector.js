@@ -201,6 +201,7 @@
 
     // Bind to swipe events if touchswipe is present
     function swipeHandler(e) {
+      console.log(e);
       var inputs,
         currentEq,
         nextEq,
@@ -239,7 +240,9 @@
         selectors = document.getElementsByClassName('selector');
       for (i = selectors.length - 1; i >= 0; i--) {
         $selector = $(selectors[i]);
-        hammeredSelector = new window.Hammer(selectors[i]);
+        hammeredSelector = new window.Hammer(selectors[i], {
+          touchAction: 'none'
+        });
 
         $selector.data('hammer', hammeredSelector);
 
