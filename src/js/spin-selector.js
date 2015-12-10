@@ -68,15 +68,19 @@
     };
 
     buildSelector = function (label, data) {
-      var $selector;
+      var $selector, innerHtml;
       $selector = $('<div class="selector"/>');
-      $selector.append('<div class="label">' + label + '</div>');
-      $selector.append('<div class="spin-up">+</div>');
-      $selector.append('<div class="value-container"><div class="value-scroller"></div></div>');
-      $selector.append('<div class="spin-down">-</div>');
       if (data) {
         $selector.data(data);
       }
+
+      innerHtml = '<div class="label">' + label + '</div>';
+      innerHtml += '<div class="spin-up">+</div>';
+      innerHtml += '<div class="value-container"><div class="value-scroller"></div></div>';
+      innerHtml += '<div class="spin-down">-</div>';
+
+      $selector.html(innerHtml);
+
       return $selector;
     };
 
