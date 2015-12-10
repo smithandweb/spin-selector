@@ -31,6 +31,8 @@
     // Internal reference: spinSelector.settings.propertyName
     // External reference: $(element).data('spinSelector').settings.propertyName
     spinSelector.settings = {};
+    // user-provided options (if any)
+    spinSelector.settings = $.extend({}, defaults, options);
 
     // Container
     $containerTmpl = $('<div class="spin-selector-container theme-' + spinSelector.settings.theme + '"/>');
@@ -39,7 +41,7 @@
     // public methods
     spinSelector.getData = function () {
       var currentData = [];
-      $('.spin-value.active').each(function () {
+      $containerTmpl.find('.spin-value.active').each(function () {
         currentData.push($(this).attr('data-value'));
       });
       return currentData;
@@ -86,13 +88,13 @@
 
     buildDefault = function () {
       var i, years = [],
-        $yearToAdd,
+        $yearsToAdd = [],
         $year,
         $month,
-        $monthToAdd,
+        $monthsToAdd = [],
         days = [],
         $day,
-        $dayToAdd;
+        $daysToAdd = [] ;
 
       // Do the year first
       $year = buildSelector('Year');
@@ -100,9 +102,9 @@
         years.push(spinSelector.settings.startYear + i);
       }
       for (i = 0; i < years.length; i++) {
-        $yearToAdd = $('<div class="spin-value">' + years[i] + '</div>').attr('data-value', years[i]);
-        $year.find('.value-scroller').append($yearToAdd);
+        $yearsToAdd.push('<div class="spin-value" data-value="' + years[i] + '">' + years[i] + '</div>');
       }
+      $year.find('.value-scroller').html($yearsToAdd.join(""));
       // Add to template
       $year.data('type', 'year');
       $containerTmpl.append($year);
@@ -111,9 +113,9 @@
       // Now the months (Short name format)
       $month = buildSelector('Month');
       for (i = 0; i < spinSelector.settings.monthShortNames.length; i++) {
-        $monthToAdd = $('<div class="spin-value">' + spinSelector.settings.monthShortNames[i] + '</div>').attr('data-value', i + 1);
-        $month.find('.value-scroller').append($monthToAdd);
+        $monthsToAdd.push('<div class="spin-value" data-value="' + (i + 1) + '">' + spinSelector.settings.monthShortNames[i] + '</div>');
       }
+      $month.find('.value-scroller').html($monthsToAdd.join(""));
       // Add to template
       $month.data('type', 'month');
       $containerTmpl.append($month);
@@ -125,9 +127,9 @@
       days = daysInMonth(($month.find('.spin-value.active').attr('data-value')), $year.find('.spin-value.active').attr('data-value'));
       // Add them to the spin selector
       for (i = 0; i < days; i++) {
-        $dayToAdd = $('<div class="spin-value">' + (i + 1) + '</div>').attr('data-value', i + 1);
-        $day.find('.value-scroller').append($dayToAdd);
+        $daysToAdd.push('<div class="spin-value" data-value="' + (i + 1) + '">' + (i + 1) + '</div>')
       }
+      $day.find('.value-scroller').html($daysToAdd.join(""));
       // Add to template
       $day.data('type', 'day');
       $containerTmpl.append($day);
@@ -180,36 +182,50 @@
       var i, $selector,
         hammeredSelector,
         selectors = document.getElementsByClassName('selector');
+
       for (i = selectors.length - 1; i >= 0; i--) {
         $selector = $(selectors[i]);
-        hammeredSelector = new window.Hammer(selectors[i], {
-          touchAction: 'none'
-        });
+        if (!$selector.data('hammer')) {
+          hammeredSelector = new window.Hammer(selectors[i], {
+            touchAction: 'none'
+          });
 
-        $selector.data('hammer', hammeredSelector);
+          $selector.data('hammer', hammeredSelector);
 
-        hammeredSelector.get('swipe').set({direction: window.Hammer.DIRECTION_ALL, threshold: 0, velocity: 0.1});
+          hammeredSelector.get('swipe').set({direction: window.Hammer.DIRECTION_ALL, threshold: 0, velocity: 0.1});
 
-        hammeredSelector.on('swipeup swipedown', function (e) {
-          touchHandler(e);
-        });
+          hammeredSelector.on('swipeup swipedown', function (e) {
+            touchHandler(e);
+          });
+        }
       }
     };
 
     // Init
     spinSelector.init = function () {
-
-      // user-provided options (if any)
-      spinSelector.settings = $.extend({}, defaults, options);
+      var i, v, $selector, $selectorToAdd;
 
       // If inputs is empty, default to date mode
       if (!spinSelector.settings.inputs) {
         buildDefault();
+      // Build out inputs if supplied
+      } else {
+        for (i = 0; i < spinSelector.settings.inputs.length; i++) {
+          $selector = buildSelector(spinSelector.settings.inputs[i].label);
+
+          for (v = 0; v < spinSelector.settings.inputs[i].values.length; v++) {
+            $selectorToAdd = $('<div class="spin-value">' + spinSelector.settings.inputs[i].values[v] + '</div>').attr('data-value', spinSelector.settings.inputs[i].values[v]);
+            $selector.find('.value-scroller').append($selectorToAdd);
+          }
+          // Add to template
+          $containerTmpl.append($selector);
+          spinSelector.setActive($selector, spinSelector.settings.inputs[i].values[0]);
+        }
       }
 
       // Bind to updates
-      $containerTmpl.on('updated', '.selector', function () {
-        var i, $dayToAdd, days, selectedDay, newActiveDay,
+      $containerTmpl.on('updated', '.selector', function (e) {
+        var $daysToAdd = [], days, selectedDay, newActiveDay,
           data = spinSelector.getData(),
           properties = $containerTmpl.data();
         if (properties.isDate && $(this).data('type') !== 'day') {
@@ -218,9 +234,9 @@
           days = daysInMonth((properties.$month.find('.spin-value.active').attr('data-value')), properties.$year.find('.spin-value.active').attr('data-value'));
           // Add them to the spin selector
           for (i = 0; i < days; i++) {
-            $dayToAdd = $('<div class="spin-value">' + (i + 1) + '</div>').attr('data-value', i + 1);
-            properties.$day.find('.value-scroller').append($dayToAdd);
+            $daysToAdd.push('<div class="spin-value" data-value="' + (i + 1) + '">' + (i + 1) + '</div>')
           }
+          properties.$day.find('.value-scroller').html($daysToAdd.join(""));
 
           if (days <= selectedDay) {
             newActiveDay = days - 1;
