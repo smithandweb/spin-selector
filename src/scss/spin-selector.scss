@@ -1,9 +1,10 @@
 .spin-selector-container {
-  width: 280px;
+  width: 250px;
   height: 160px;
   background: #222;
   padding: 20px 20px 0 20px;
   box-sizing: content-box;
+  display: flex;
 
   &::after {
     content: " ";
@@ -11,9 +12,8 @@
   }
 
   .selector {
-    width: 80px;
     margin-right: 20px;
-    float: left;
+    flex: 1 1 80px;
 
     color: #efefef;
     text-align: center;
@@ -43,11 +43,13 @@
     }
 
     .value-container {
+      width: 100%;
       position: relative;
       min-height: 70px;
       overflow: hidden;
 
       .value-scroller {
+        width: 100%;
         position: absolute;
         transition: top 0.3s ease-in-out;
       }
@@ -55,7 +57,7 @@
 
     .spin-value {
       height: 60px;
-      width: 80px;
+      width: 100%;
       line-height: 60px;
       font-size: 24px;
       background: #333;
