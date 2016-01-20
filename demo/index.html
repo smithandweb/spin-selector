@@ -8,6 +8,9 @@
   <body>
   <h1>Spin Selector</h1>
     <div class="spin-selector"></div>
+    <!-- <br/>
+    <br/>
+    <div class="spin-selector"></div> -->
 <script type="text/javascript" src="lib/jquery.js"></script>
 <script type="text/javascript" src="lib/hammer.js"></script>
 <script type="text/javascript" src="../dist/spin-selector.min.js"></script>
@@ -15,7 +18,23 @@
   var opts = {
     callback: function (data) {
       console.log(data);
-    }
+    },
+    buttons: [
+      {
+        label: 'Button 1',
+        css: 'classone classtwo whatever',
+        callback: function (e) {
+          console.log(e)
+        }
+      },
+      {
+        label: 'Button 2',
+        css: 'classone classtwo whatever',
+        callback: function (e) {
+          console.log(e)
+        }
+      }
+    ]
   }
   $(document).ready(function() {
     $('.spin-selector').spinSelector(opts);

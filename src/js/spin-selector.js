@@ -1,7 +1,5 @@
-'use strict';
-(function ($) {
+;(function ($, window, document, undefined) {
 
-  // here we go!
   $.spinSelector = function (element, options) {
 
     // Default options
@@ -9,10 +7,12 @@
 
         selectors: 3,
         theme: 'dark',
+        width: null,
         startYear: new Date().getFullYear() - 5,
         currentYear: new Date().getFullYear(),
         endYear: new Date().getFullYear() + 5,
         inputs: null,
+        buttons: null,
         callback: function () {},
         monthShortNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
       },
@@ -20,6 +20,7 @@
       spinSelector = this,
       $element = $(element),
       $containerTmpl,
+      $selectorContainer,
     // Private methods
       daysInMonth,
       buildSelector,
@@ -36,9 +37,14 @@
 
     // Container
     $containerTmpl = $('<div class="spin-selector-container theme-' + spinSelector.settings.theme + '"/>');
+    $selectorContainer = $('<div class="selector-container"/>');
+    if (spinSelector.settings.width) {
+      $containerTmpl.css('width', spinSelector.settings.width);
+    }
     $element.append($containerTmpl);
+    $containerTmpl.append($selectorContainer);
 
-    // public methods
+    // Prototypal
     spinSelector.getData = function () {
       var currentData = [];
       $containerTmpl.find('.spin-value.active').each(function () {
@@ -48,7 +54,8 @@
     };
 
     spinSelector.setActive = function ($input, value) {
-      if ($input.find('[data-value=' + value + ']').length <= 0) {
+      $input = ($input instanceof jQuery) ? $input : $($input);
+      if ($input.find('[data-value="' + value + '"]').length <= 0) {
         return;
       }
       var $active, pos,
@@ -56,11 +63,11 @@
 
       // Toggle active class
       $input.find('.active').toggleClass('active');
-      $active = $input.find('[data-value=' + value + ']');
+      $active = $input.find('[data-value="' + value + '"]');
       $active.toggleClass('active');
 
       // Set position
-      pos = $input.find('[data-value=' + value + ']').position().top;
+      pos = $input.find('[data-value="' + value + '"]').position().top;
       $scroller.css('top', '-' + pos + 'px');
     };
 
@@ -107,7 +114,7 @@
       $year.find('.value-scroller').html($yearsToAdd.join(""));
       // Add to template
       $year.data('type', 'year');
-      $containerTmpl.append($year);
+      $selectorContainer.append($year);
       spinSelector.setActive($year, new Date().getFullYear());
 
       // Now the months (Short name format)
@@ -118,7 +125,7 @@
       $month.find('.value-scroller').html($monthsToAdd.join(""));
       // Add to template
       $month.data('type', 'month');
-      $containerTmpl.append($month);
+      $selectorContainer.append($month);
       spinSelector.setActive($month, new Date().getMonth() + 1);
 
       // Finally the days
@@ -132,7 +139,7 @@
       $day.find('.value-scroller').html($daysToAdd.join(""));
       // Add to template
       $day.data('type', 'day');
-      $containerTmpl.append($day);
+      $selectorContainer.append($day);
       spinSelector.setActive($day, new Date().getDate());
 
       // Add container data
@@ -203,13 +210,13 @@
 
     // Init
     spinSelector.init = function () {
-      var i, v, $selector, $selectorToAdd;
+      var i, v, $selector, $selectorToAdd, $button, $buttonsContainer;
 
       // If inputs is empty, default to date mode
       if (!spinSelector.settings.inputs) {
         buildDefault();
       // Build out inputs if supplied
-      } else {
+      } else if (spinSelector.settings.inputs.length > 0) {
         for (i = 0; i < spinSelector.settings.inputs.length; i++) {
           $selector = buildSelector(spinSelector.settings.inputs[i].label);
 
@@ -218,8 +225,31 @@
             $selector.find('.value-scroller').append($selectorToAdd);
           }
           // Add to template
-          $containerTmpl.append($selector);
+          $selectorContainer.append($selector);
           spinSelector.setActive($selector, spinSelector.settings.inputs[i].values[0]);
+        }
+      }
+
+      // Build out buttons if supplied
+      if (spinSelector.settings.buttons && spinSelector.settings.buttons.length > 0) {
+        $buttonsContainer = $containerTmpl.append('<div class="buttons-container"/>').find('.buttons-container');
+        for (i = 0; i < spinSelector.settings.buttons.length; i++) {
+          $button = $('<a href="#" class="button"/>').text(spinSelector.settings.buttons[i].label);
+
+          if (spinSelector.settings.buttons[i].link) {
+            $button.attr('href', spinSelector.settings.buttons[i].link);
+          }
+
+          if (spinSelector.settings.buttons[i].css) {
+            $button.addClass(spinSelector.settings.buttons[i].css);
+          }
+
+          // Assign callback to button if there's no link and a callback function is supplied
+          if (spinSelector.settings.buttons[i].callback && !spinSelector.settings.buttons[i].link && typeof spinSelector.settings.buttons[i].callback === 'function') {
+            $button.on('click', spinSelector.settings.buttons[i].callback);
+          }
+
+          $buttonsContainer.append($button);
         }
       }
 
@@ -300,12 +330,9 @@
       // if plugin has not already been attached to the element
       if (undefined === $(this).data('spinSelector')) {
 
-        // create a new instance of the plugin
-        var spinSelector = new $.spinSelector(this, options);
-
         // in the jQuery version of the element
-        // store a reference to the plugin object
-        $(this).data('spinSelector', spinSelector);
+        // store a reference to the new plugin object
+        $(this).data('spinSelector', new $.spinSelector(this, options));
 
       }
 
@@ -313,4 +340,4 @@
 
   };
 
-}(jQuery));
+}(jQuery, window, document));

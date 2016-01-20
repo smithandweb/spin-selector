@@ -1,20 +1,20 @@
 .spin-selector-container {
   width: 250px;
-  height: 160px;
   background: #222;
-  padding: 20px 20px 0 20px;
+  padding: 20px;
   box-sizing: content-box;
-  display: flex;
 
   &::after {
     content: " ";
     clear: both;
   }
+  .selector-container {
+    display: flex;
+  }
 
   .selector {
     margin-right: 20px;
     flex: 1 1 80px;
-
     color: #efefef;
     text-align: center;
 
@@ -73,6 +73,27 @@
 
     &:last-child {
       margin-right: 0;
+    }
+  }
+
+  .buttons-container {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .button {
+    display: block;
+    background: #333;
+    color: #efefef;
+    width: 100%;
+    line-height: 35px;
+    text-decoration: none;
+    text-align: center;
+    margin-bottom: 5px;
+
+    &:last-child {
+      margin-bottom: 0;
     }
   }
 }

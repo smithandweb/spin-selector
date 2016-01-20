@@ -24,11 +24,11 @@ module.exports = function (grunt) {
     },
     uglify: {
       options: {
-        beautify: false,
-        compress: true,
-        mangle: true,
+        beautify: true,
+        compress: false,
+        mangle: false,
         sourceMap: false,
-        preserveComments: false
+        preserveComments: true
       },
       my_target: {
         files: [
